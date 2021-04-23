@@ -1,0 +1,11 @@
+{ "data": "01b7b6010101010101",
+         "id": "DEVICEID",
+         "customData#Modes": "1",
+         "customData#bat": "-73",
+         "customData#batEnv": "-74",
+         "customData#tempbase": "1",
+         "time": "1606808070",
+         "computedLocation": {
+            "lat":0.0, "lng":0.0,
+            "radius":30200, "source":2,"status":1}
+            }

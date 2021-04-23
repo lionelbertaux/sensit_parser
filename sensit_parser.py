@@ -1,16 +1,25 @@
 """ Python script to parse data coming from a sensit
     Contains a handle function with context and event parameters
+
+    Author: Lionel Bertaux
+    Date: 23/04/2021
+    Version: 1.0
+    Github repo: https://github.com/lionelbertaux/sensit_parser.git
 """
 
+import json
 
 def parse(data, version=1):
     """ Parse data for specified sensit version
     """
     if version == 1:
-        parse_v1(data)
+        ret = parse_v1(data)
+    else:
+        ret = {"body": {"message": "version not supported"}, "statusCode": 500}
+    return ret
 
 def convert_battery(data):
-    ret = 0 
+    ret = 0
     if len(data) <= 2:
         ret = int(data, 16) * 0.02
     return ret
@@ -20,8 +29,8 @@ def convert_temperature(data):
     if len(data) <= 2:
         ret = int(data, 16)
         if ret > 128:
-            ret = ret - 256  
-        ret = (ret + 46) /2 
+            ret = ret - 256
+        ret = (ret + 46) /2
     return ret
 
 
@@ -60,58 +69,31 @@ def parse_v1(data):
             print("-- mode temperature")
             for i in range(8, len(data), 2):
                 out_data["values"].append(convert_temperature(data[i:i+2]))
+            print("-- Data parsed: " + str(out_data))
+            return {"body": {"message": "Temperature message stored " + str(out_data.get("values"))}, "statusCode": 200}
         elif mode == 2:
             print("mode movement")
+            return {"body": {"message": "Mouvement message not implemented yet"}, "statusCode": 500}
+
         elif mode == 3:
             print("mode full")
+            return {"body": {"message": "Full message not implemented yet"}, "statusCode": 500}
         else:
             print("OFF")
-        print(out_data)
-        return True
+            return {"body": {"message": "OFF notification not implemented yet"}, "statusCode": 500}
     except Exception as e:
         print("Error during data parsing " + str(data) + ". Error: " + str(e.args))
-        return False
-
+        return {"body": {"message": "Error " + str(e.args)}, "statusCode": 500}
+    return {"body": {"message": "Nothing was processed"}, "statusCode": 500}
 
 def handle(event, context):
-    """ Context
-    {'memoryLimitInMb': 128, 'functionName': 'sensitv1parser', 'functionVersion': ''}
-    """
-    """ Event
-    {'resource': '',
-        'path': '/',
-        'httpMethod': 'POST',
-        'headers': {
-            'Accept-Encoding': 'gzip', 'Content-Length': '309', 'Forwarded': 'for=195.154.71.32;proto=https,
-            for=100.64.7.110', 'K-Proxy-Request': 'activator', 'User-Agent': 'Go-http-client/2.0',
-            'X-Envoy-Expected-Rq-Timeout-Ms': '172800000', 'X-Envoy-External-Address': '195.154.71.32',
-            'X-Forwarded-For': '195.154.71.32, 100.64.7.110, 100.64.0.213', 'X-Forwarded-Proto': 'https', '
-            X-Mqtt-Retain': 'false', 'X-Mqtt-Topic': 'sigfox/sensit/payload',
-            'X-Request-Id': '610d2521-caac-41b8-af0cc8eddbf709fc', 'X-Request-Start': 't=1606808095.334'},
-        'multiValueHeaders': None,
-        'queryStringParameters': {},
-        'multiValueQueryStringParameters': None,
-        'pathParameters': None,
-        'stageVariables': {},
-        'requestContext': {
-            'accountId': '', 'resourceId': '', 'stage': '', 'requestId': '', 'resourcePath': '',
-            'authorizer': None, 'httpMethod': 'POST', 'apiId': ''},
-        'body': '{\r\n "data": "01b7b6010101010101",
-            \r\n "id": "B92A4",
-            \r\n "customData#Modes": "1",
-            \r\n "customData#bat": "-73",
-            \r\n "customData#batEnv": "-74",
-            \r\n "customData#tempbase": "1",
-            \r\n "time": "1606808070",
-            \r\n "computedLocation": {
-                "lat":42.92188741630114, "lng":1.5906386969099215,
-                "radius":30200, "source":2,"status":1}\r\n
-                }'
-    }
-    """
-    print("Message from " + str(event.get("resource",{}).get("body", {}).get("id")) +". Data: " \
-     + str(event.get("body", {}).get("data")))
-    parse(data=event.get("body", {}).get("data", ""))
-    return {"body": {"message": 'Hello, world' }, "statusCode": 200 }
-
-
+    if event.get("httpMethod") != "POST":
+        return {"body": {"message": "Only POST method is allowed"}, "statusCode": 501}
+    body = event.get("body", {})
+    if body == {}:
+        return {"body": {"message": "Body of request not found"}, "statusCode": 500}
+    # The body is given as a string
+    if type(body) == str:
+        body = json.loads(body)
+    ret = parse(data=body.get("data", ""), version=1)
+    return ret

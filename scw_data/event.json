@@ -1,0 +1,21 @@
+    {   "resource": "",
+        "path": "/",
+        "httpMethod": "POST",
+        "headers": {
+            "Accept-Encoding": "gzip", "Content-Length": "309", "Forwarded": "for=195.154.71.32;proto=https,for=100.64.7.110", "K-Proxy-Request": "activator", "User-Agent": "Go-http-client/2.0",
+            "X-Envoy-Expected-Rq-Timeout-Ms": "172800000", "X-Envoy-External-Address": "195.154.71.32","X-Forwarded-For": "195.154.71.32, 100.64.7.110, 100.64.0.213", "X-Forwarded-Proto": "https", "X-Mqtt-Retain": "false", "X-Mqtt-Topic": "sigfox/sensit/payload","X-Request-Id": "610d2521-caac-41b8-af0cc8eddbf709fc", "X-Request-Start": "t=1606808095.334"},
+        "multiValueHeaders": "None",
+        "queryStringParameters": {},
+        "multiValueQueryStringParameters": "None",
+        "pathParameters": "None",
+        "stageVariables": {},
+        "requestContext": {
+            "accountId": "", "resourceId": "", "stage": "", "requestId": "", "resourcePath": "",
+            "authorizer": "None", "httpMethod": "POST", "apiId": ""},
+        "body": { "data": "01b7b6010101010101", "id": "DEVICEID", "customData#Modes": "1", "customData#bat": "-73", "customData#batEnv": "-74", "customData#tempbase": "1",
+             "time": "1606808070",
+             "computedLocation": {
+                "lat": 0.0, "lng": 0.0,
+                "radius":30200, "source":2,"status":1}
+                }
+    }
