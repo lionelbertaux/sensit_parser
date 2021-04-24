@@ -8,15 +8,7 @@
 """
 
 import json
-
-def parse(data, version=1):
-    """ Parse data for specified sensit version
-    """
-    if version == 1:
-        ret = parse_v1(data)
-    else:
-        ret = {"body": {"message": "version not supported"}, "statusCode": 500}
-    return ret
+import os
 
 def convert_battery(data):
     ret = 0
@@ -86,6 +78,7 @@ def parse_v1(data):
         return {"body": {"message": "Error " + str(e.args)}, "statusCode": 500}
     return {"body": {"message": "Nothing was processed"}, "statusCode": 500}
 
+
 def handle(event, context):
     if event.get("httpMethod") != "POST":
         return {"body": {"message": "Only POST method is allowed"}, "statusCode": 501}
@@ -95,5 +88,10 @@ def handle(event, context):
     # The body is given as a string
     if type(body) == str:
         body = json.loads(body)
-    ret = parse(data=body.get("data", ""), version=1)
+    # Only parsing of sensit v1 is supported for now
+    # Different functions could be called depending on a variable in the callback body
+    if body.get("type", "") == "sensit1":
+        ret = parse_v1(data=body.get("data", ""))
+    else:
+        ret = {"body": {"message": "Type not supported '" + str(body.get("type", "")) + "'"}, "statusCode": 500}
     return ret
