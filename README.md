@@ -10,13 +10,17 @@ This repository contains sample script to parse data coming from a Sigfox sensit
 
 ## Usage as Scaleway serverless function
 
-Deploying a serverless function is straigtforward. The current version does not push the data once parsed, it could be added in the future.
+*The current version does not push the data once parsed, it could be added in the future.*
+
+Deploying a serverless function is straigtforward.
 
 1. Create a Namespace
 2. Create a function and choose Public or Private
 3. Select online editor / python3
 4. Paste the code in sensit_parser.py
 5. Wait for function to be ready
+
+*API example below are all using the fr-par region*
 
 ### Check function availability
 
@@ -26,11 +30,22 @@ Status of the function can be assessed in the GUI or via the API. For the API, y
 # Check function status with API
 curl -X GET --header "x-auth-token: $SCW_TOKEN" https://api.scaleway.com/functions/v1alpha2/regions/fr-par/functions/
 ```
-### Call the serverless function via its endpoint
 
-
+### Call a public serverless function
+A public function can simply be called via its endpoint.
 ```bash
 # Test a public function
-curl -X POST -d "@body.json" -H "Content-Type: application/json"  FUNCTION_ENDPOINT
+curl -X POST -d "@body.json" -H "Content-Type: application/json"  <endpoint>
+```
+
+### Call a private serverless function
+Private function can be called when authentified with a dedicated token. This token can be generated with the API and the function id.
+```bash
+# Retrieve the function ID
+curl --silent  -X GET --header "x-auth-token: $SCW_TOKEN"  "https://api.scaleway.com/functions/v1alpha2/regions/fr-par/functions" | jq ".functions[]"
+# Generate a token using the 'id' field of the function we want to call
+curl --silent  -X GET --header "x-auth-token: $SCW_TOKEN"  "https://api.scaleway.com/functions/v1alpha2/regions/fr-par/jwt/issue?function_id=<function_id>" | jq "."
+# Call the function and pass the generated token
+curl -X POST -d "@callback_body.json" -H "SCW_FUNCTIONS_TOKEN: $SCW_FUNCTION_TOKEN" <endpoint>
 
 ```
