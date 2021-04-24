@@ -10,6 +10,8 @@ This repository contains sample script to parse data coming from a Sigfox sensit
 
 ## Usage as Scaleway serverless function
 
+Deploying a serverless function is straigtforward. The current version does not push the data once parsed, it could be added in the future.
+
 1. Create a Namespace
 2. Create a function and choose Public or Private
 3. Select online editor / python3
