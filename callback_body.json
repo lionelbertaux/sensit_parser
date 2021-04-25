@@ -7,5 +7,6 @@
          "time": "1606808070",
          "computedLocation": {
             "lat":0.0, "lng":0.0,
-            "radius":30200, "source":2,"status":1}
+            "radius":30200, "source":2,"status":1},
+	    "type": "sensit1"
             }

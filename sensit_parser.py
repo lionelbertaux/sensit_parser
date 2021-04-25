@@ -94,4 +94,5 @@ def handle(event, context):
         ret = parse_v1(data=body.get("data", ""))
     else:
         ret = {"body": {"message": "Type not supported '" + str(body.get("type", "")) + "'"}, "statusCode": 500}
+    ret.update({"headers": {"X-Mqtt-Topic": "sensit/processed"}})
     return ret

@@ -49,3 +49,29 @@ curl --silent  -X GET --header "x-auth-token: $SCW_TOKEN"  "https://api.scaleway
 curl -X POST -d "@callback_body.json" -H "SCW_FUNCTIONS_TOKEN: $SCW_FUNCTION_TOKEN" <endpoint>
 
 ```
+
+### Parse data sent to an IoT Hub MQTT broker
+
+Using scaleway APIs or scaleway cli, you can retrieve your IoT Hub information and the name of the devices.
+The secret for the devices is also required depending on the method used to publish
+```bash
+scw iot list
+```
+
+#### Subscribe to a topic with mosquitto
+
+```bash
+# Verbose option will display the topic name along with the message, -t # displays all topics
+mosquitto_sub -h iot.fr-par.scw.cloud -i <device id> -t # -v
+```
+
+#### Publish a message with mosquitto
+```bash
+mosquitto_pub -i <device id> -h iot.fr-par.scw.cloud -t <topic/subtopic> -d <data>
+```
+
+
+### Publish a message with curl
+```bash
+curl -X POST -d <data> -H "x-secret:<device secret>" -H "x-topic:<topic/subtopic>" <url>
+```
