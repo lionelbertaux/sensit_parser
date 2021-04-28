@@ -3,7 +3,7 @@
 
     Author: Lionel Bertaux
     Date: 23/04/2021
-    Version: 1.0
+    Version: 1.2
     Github repo: https://github.com/lionelbertaux/sensit_parser.git
 """
 
@@ -94,5 +94,5 @@ def handle(event, context):
         ret = parse_v1(data=body.get("data", ""))
     else:
         ret = {"body": {"message": "Type not supported '" + str(body.get("type", "")) + "'"}, "statusCode": 500}
-    ret.update({"headers": {"X-Mqtt-Topic": "sensit/processed"}})
+    ret.update({"headers": {"X-Mqtt-Topic": "sigfox/sensit/processed"}})
     return ret

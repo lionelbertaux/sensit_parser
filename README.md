@@ -55,14 +55,17 @@ curl -X POST -d "@callback_body.json" -H "SCW_FUNCTIONS_TOKEN: $SCW_FUNCTION_TOK
 Using scaleway APIs or scaleway cli, you can retrieve your IoT Hub information and the name of the devices.
 The secret for the devices is also required depending on the method used to publish
 ```bash
-scw iot list
+scw iot device list
 ```
+
+A more advanced description is available in [Triggering functions from IoT Hub messages](https://www.scaleway.com/en/docs/howto-iothub-serverless-faas)
 
 #### Subscribe to a topic with mosquitto
 
 ```bash
 # Verbose option will display the topic name along with the message, -t # displays all topics
 mosquitto_sub -h iot.fr-par.scw.cloud -i <device id> -t # -v
+
 ```
 
 #### Publish a message with mosquitto
@@ -72,6 +75,10 @@ mosquitto_pub -i <device id> -h iot.fr-par.scw.cloud -t <topic/subtopic> -d <dat
 
 
 ### Publish a message with curl
+Message will be received if you subscribe to the topic.
 ```bash
 curl -X POST -d <data> -H "x-secret:<device secret>" -H "x-topic:<topic/subtopic>" <url>
 ```
+
+### Route an MQTT message to a serverless function
+In the IoT hub, define a route to send your messages.
