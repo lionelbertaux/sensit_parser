@@ -9,6 +9,26 @@
 
 import json
 import os
+import requests
+
+auth = ("5bb48a8ae833d93a5e96fbf1", "")
+
+def get_data(device, limit=5):
+    raw_data = ""
+    url = "https://backend.sigfox.com/api/v2/devices/" + str(device) + "/messages"
+    req = requests.get(url, auth=auth, params={"limit": limit})
+    if req.status_code != 200:
+        print("Error obtaining data. [" + str(req.status_code) + "] " + str(req.data))
+    if req.status_code == 200:
+        data = req.json()
+        # obtain data of the last message
+        if data.get("data") != []:
+            last_msg = data.get("data", [])[0]
+            print("Last msg time: " + str(last_msg.get("time")) + " Data: " + str(last_msg.get("data")))
+            raw_data = last_msg.get("data", "")
+    return raw_data
+
+
 
 def convert_battery(data):
     ret = 0
